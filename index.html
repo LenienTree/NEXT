@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LenientTree</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .text-container {
+      font-size: 4rem;
+      display: inline-block;
+      cursor: default;
+      position: relative;
+    }
+    
+    .char {
+      display: inline-block;
+      position: relative;
+      color: #666;
+    }
+    
+    .char::before {
+      content: attr(data-char);
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at var(--mouse-x, -100px) var(--mouse-y, -100px),
+        #0066ff 0px,
+        #3388ff 20px,
+        #66aaff 35px,
+        #ffffff 50px,
+        transparent 50px
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      mask: radial-gradient(
+        circle at var(--mouse-x, -100px) var(--mouse-y, -100px),
+        rgba(0,0,0,1) 0px,
+        rgba(0,0,0,1) 50px,
+        rgba(0,0,0,0) 50px
+      );
+      -webkit-mask: radial-gradient(
+        circle at var(--mouse-x, -100px) var(--mouse-y, -100px),
+        rgba(0,0,0,1) 0px,
+        rgba(0,0,0,1) 50px,
+        rgba(0,0,0,0) 50px
+      );
+    }
+    
+    .char.active::before {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="text-container" id="text"></div>
+  
+  <script>
+    const text = "Hover Me Precisely";
+    const container = document.getElementById("text");
+
+    // Split text into spans
+    [...text].forEach(char => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.classList.add("char");
+      span.setAttribute('data-char', char);
+      container.appendChild(span);
+    });
+
+    const chars = document.querySelectorAll(".char");
+
+    container.addEventListener("mousemove", (e) => {
+      let hoveredChar = null;
+      
+      // Find which character is being hovered
+      chars.forEach(char => {
+        const rect = char.getBoundingClientRect();
+        if (
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom
+        ) {
+          hoveredChar = char;
+        }
+      });
+      
+      // Remove active class from all characters
+      chars.forEach(char => {
+        char.classList.remove('active');
+      });
+      
+      // Apply illumination only to the hovered character at exact mouse position
+      if (hoveredChar) {
+        const charRect = hoveredChar.getBoundingClientRect();
+        const mouseX = e.clientX - charRect.left;
+        const mouseY = e.clientY - charRect.top;
+        
+        hoveredChar.style.setProperty('--mouse-x', `${mouseX}px`);
+        hoveredChar.style.setProperty('--mouse-y', `${mouseY}px`);
+        hoveredChar.classList.add('active');
+      }
+    });
+
+    container.addEventListener("mouseleave", () => {
+      chars.forEach(char => {
+        char.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

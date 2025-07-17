@@ -1,0 +1,68 @@
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.control-btn {
+  padding: 0.5rem;
+  border-radius: 50%;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #4b5563;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.control-btn:hover {
+  background: #374151;
+}
+
+.dots-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4b5563;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dot:hover {
+  background: #6b7280;
+}
+
+.dot.active {
+  background: #10b981;
+  transform: scale(1.25);
+}
+
+@media (max-width: 768px) {
+  .carousel-controls {
+    margin-top: 1.5rem;
+  }
+
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+}

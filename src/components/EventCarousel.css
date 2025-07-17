@@ -1,0 +1,30 @@
+.carousel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.carousel-wrapper {
+  position: relative;
+}
+
+.carousel-track-container {
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    padding: 1rem 0.5rem;
+  }
+}
