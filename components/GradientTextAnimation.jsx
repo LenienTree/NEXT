@@ -58,7 +58,7 @@ const GradientTextAnimation = ({ text = "Lenient  Tree" }) => {
 
   return (
     // Only the h1 element is rendered, removing the outer div
-      <h1 className="font-Urbanist text-container" ref={textContainerRef}>
+      <h1 className=" font-Urbanist text-container" ref={textContainerRef}>
       {[...text].map((char, index) => (
         <span key={index} className="char" data-char={char}>
           {char === ' ' ? '\u00A0' : char} {/* Render non-breaking space for actual spaces */}
@@ -129,7 +129,7 @@ const GradientTextAnimation = ({ text = "Lenient  Tree" }) => {
         }
         @media (max-width: 480px) {
           .text-container {
-            font-size: 17vw;
+            font-size: 16vw;
           }
         }
         `}

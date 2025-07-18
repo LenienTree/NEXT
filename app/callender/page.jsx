@@ -82,7 +82,7 @@ export default function HomePage() {
             !isCurrentMonth ? "text-gray-500" : "text-white"
           } ${
             isHovered
-              ? "bg-slate-700/30 transform scale-105"
+              ? " transform scale-105 shadow-[0_0_8px_4px_rgba(255,255,255,0.5)]"
               : "hover:bg-slate-700/20"
           }`}
           onMouseEnter={() => setHoveredDate(day)}

@@ -18,7 +18,7 @@ export default function Login() {
     phoneNumber: '',
     college: '',
     graduationYear: '',
-    role: 'student'
+    role: ''
   })
 
   useEffect(() => {
@@ -43,14 +43,14 @@ export default function Login() {
     try {
       const endpoint = isSignUp ? 'signup' : 'login'
       const url = `${API_URL}/${endpoint}`
-      const body = isSignUp 
-        ? { 
-            ...formData, 
+      const body = isSignUp
+        ? {
+            ...formData,
             graduationYear: formData.graduationYear ? parseInt(formData.graduationYear) : null
           }
-        : { 
-            email: formData.email, 
-            password: formData.password 
+        : {
+            email: formData.email,
+            password: formData.password
           }
 
       const response = await fetch(url, {
@@ -64,25 +64,47 @@ export default function Login() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong')
+        // Log error message from API if response is not ok
+        console.log(data.message || 'Something went wrong on the server.')
+        toast.error(data.message || 'An error occurred during ' + endpoint + '.');
+        return; // Stop execution if there's an API error
       }
 
-      if (data.token) {
-        localStorage.setItem('token', data.token)
-        toast.success(isSignUp ? 'Account created successfully!' : 'Login successful!')
-        router.push('/landing')
+      // If response is OK (status 200-299)
+      if (isSignUp) {
+        // If it was a signup, switch to sign-in view and clear relevant fields
+        toast.success('Account created successfully! Please sign in.');
+        setIsSignUp(false); // Switch to sign-in view
+        setFormData(prev => ({ // Clear signup-specific fields, keep email/password for convenience
+          ...prev,
+          name: '',
+          phoneNumber: '',
+          college: '',
+          graduationYear: '',
+          role: ''
+        }));
+      } else {
+        // If it was a login, store token and redirect to landing page
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          toast.success('Login successful!');
+          router.push('/landing');
+        } else {
+          // Fallback if login was successful but no token was returned (shouldn't happen with typical auth)
+          toast.error('Login successful, but no token received.');
+        }
       }
 
     } catch (error) {
-      console.error('Error:', error)
-      toast.error(error.message || 'An error occurred. Please try again.')
+      console.error('Network Error:', error);
+      toast.error(error.message || 'A network error occurred. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center" 
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center"
          style={{ backgroundImage: `url('/BG.png')` }}>
       <div className="bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md mx-4">
         <div className="text-center mb-8">
@@ -137,6 +159,22 @@ export default function Login() {
                   disabled={isLoading}
                 />
               </div>
+              <div>
+                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                  <select
+                    id="role"
+                    name="role"
+                    required
+                    value={formData.role}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isLoading}
+                  >
+                    <option value="">Select a role</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">College/University</label>
@@ -224,7 +262,8 @@ export default function Login() {
                   name: '',
                   phoneNumber: '',
                   college: '',
-                  graduationYear: ''
+                  graduationYear: '',
+                  role: '' // Ensure role is reset here too when toggling manually
                 })
                 setIsSignUp(!isSignUp)
               }}
