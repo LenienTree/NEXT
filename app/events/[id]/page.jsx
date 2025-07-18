@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, notFound } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import Header from '../../../components/Header'
 import Link from 'next/link'
@@ -44,6 +44,43 @@ export default function EventDetails() {
     return new Date(dateString).toLocaleDateString('en-US', options)
   }
 
+  const handleCheckIn = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/events/${id}/check-in`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth token
+        },
+        credentials: 'include' // Important for sending cookies if using httpOnly cookies
+      });
+  
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Check-in failed');
+      }
+  
+      toast.success(data.message || 'Successfully checked in! Redirecting...');
+      
+      // Redirect to the event's website after a short delay
+      setTimeout(() => {
+        if (event?.website) {
+          // Ensure the URL has http:// or https://
+          let websiteUrl = event.website;
+          if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+            websiteUrl = 'https://' + websiteUrl;
+          }
+          window.open(websiteUrl, '_blank');
+        }
+      }, 1000);
+      
+      return data;
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      toast.error(error.message || 'Failed to check in');
+    }
+  };
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a192f]">
@@ -63,29 +100,16 @@ export default function EventDetails() {
   }
 
   if (!event) {
-    return (
-      <div className="min-h-screen bg-[#0a192f] text-gray-300">
-        <Header />
-        <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl mb-4">Event not found</h1>
-          <Link 
-            href="/events" 
-            className="text-blue-400 hover:underline"
-          >
-            Back to Events
-          </Link>
-        </div>
-      </div>
-    )
+    notFound();
   }
 
   return (
-    <div className="min-h-screen bg-[#0a192f] text-gray-300">
+    <div className="min-h-screen bg-[#0a192f] text-gray-300 pt-24">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Link 
-            href="/events" 
+            href="/landing" 
             className="inline-flex items-center text-blue-400 hover:underline mb-6"
           >
             ← Back to Events
@@ -164,15 +188,13 @@ export default function EventDetails() {
                         : 'Join us for free!'}
                     </p>
                     
-                    {event.websiteLink ? (
-                      <a
-                        href={event.websiteLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full block text-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    {event.website ? (
+                      <button
+                        onClick={handleCheckIn}
+                        className="w-full text-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                       >
                         Register Now
-                      </a>
+                      </button>
                     ) : (
                       <button
                         disabled

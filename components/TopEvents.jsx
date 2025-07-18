@@ -1,8 +1,6 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
@@ -12,26 +10,37 @@ const EventCard = ({ event }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href={`/events/${event._id}`} className="block relative w-full h-64 md:h-72 lg:h-80 bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-300 hover:scale-105">
+    <Link
+      href={`/events/${event._id}`}
+      className="block relative w-full h-64 md:h-72 lg:h-80 bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-300 hover:scale-105"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <img
-        src={event.eventimage || `https://placehold.co/400x250/4b5563/d1d5db?text=${encodeURIComponent(event.eventname || 'Event')}`}
+        src={
+          event.eventimage ||
+          `https://placehold.co/400x250/4b5563/d1d5db?text=${encodeURIComponent(
+            event.eventname || 'Event'
+          )}`
+        }
         alt={event.eventname}
         className="w-full h-full object-cover transition-opacity duration-300"
-        style={{ opacity: isHovered ? 0.3 : 1, aspectRatio: "3 / 4" }}
+        style={{ opacity: isHovered ? 0.3 : 1 }}
         onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = `https://placehold.co/400x250/4b5563/d1d5db?text=Image+Not+Found`;
+          e.currentTarget.src =
+            'https://placehold.co/400x250/4b5563/d1d5db?text=Image+Not+Found';
         }}
       />
-
       <div
         className={`absolute inset-0 flex items-center justify-center p-4 bg-black bg-opacity-70 transition-opacity duration-300 ${
           isHovered ? 'opacity-100' : 'opacity-0'
         }`}
       >
         <div className="text-white text-center">
-          <h3 className="text-lg md:text-lg font-bold mb-2">{event.eventname || 'Untitled Event'}</h3>
-          <p className="text-sm md:text-base">{event.description || 'No description available'}</p>
+          <h3 className="text-lg font-bold mb-2">
+            {event.eventname || 'Untitled Event'}
+          </h3>
+          <p className="text-sm">{event.description || 'No description'}</p>
         </div>
       </div>
     </Link>
@@ -39,135 +48,89 @@ const EventCard = ({ event }) => {
 };
 
 const CarouselSection = ({ title, events, loading }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardWidth, setCardWidth] = useState(0);
-  const [cardsToShow, setCardsToShow] = useState(2);
   const carouselRef = useRef(null);
+  const [showLeftGradient, setShowLeftGradient] = useState(false);
+  const [showRightGradient, setShowRightGradient] = useState(true);
 
-  const cardsPerViewBreakpoints = {
-    mobile: 2,
-    tablet: 3,
-    desktop: 4,
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+    
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    
+    setShowLeftGradient(scrollLeft > 10);
+    setShowRightGradient(scrollLeft < maxScroll - 10);
   };
 
-  const calculateCardsToShow = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      if (window.innerWidth >= 1024) return cardsPerViewBreakpoints.desktop;
-      if (window.innerWidth >= 768) return cardsPerViewBreakpoints.tablet;
-    }
-    return cardsPerViewBreakpoints.mobile;
-  }, [cardsPerViewBreakpoints]);
-
+  // Check scroll position on mount and window resize
   useEffect(() => {
-    const updateDisplaySettings = () => {
-      const numCards = calculateCardsToShow();
-      setCardsToShow(numCards);
-
-      if (carouselRef.current) {
-        const gap = 24;
-        const containerWidth = carouselRef.current.offsetWidth;
-        const calculatedCardWidth = (containerWidth - (numCards - 1) * gap) / numCards;
-        setCardWidth(calculatedCardWidth);
-      }
-    };
-
-    updateDisplaySettings();
-    window.addEventListener('resize', updateDisplaySettings);
-    return () => window.removeEventListener('resize', updateDisplaySettings);
-  }, [calculateCardsToShow]);
-
-  const totalEvents = events?.length || 0;
-
-  const handleNext = () => {
-    if (totalEvents === 0) return;
-    setCurrentIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1;
-      if (nextIndex > totalEvents - cardsToShow) {
-        return 0;
-      }
-      return nextIndex;
-    });
-  };
-
-  const handlePrev = () => {
-    if (totalEvents === 0) return;
-    setCurrentIndex((prevIndex) => {
-      const nextIndex = prevIndex - 1;
-      const maxIndex = totalEvents - cardsToShow;
-      if (nextIndex < 0) {
-        return maxIndex > 0 ? maxIndex : 0;
-      }
-      return nextIndex;
-    });
-  };
-
-  const translateXValue = -currentIndex * (cardWidth + 24);
+    handleScroll();
+    window.addEventListener('resize', handleScroll);
+    return () => window.removeEventListener('resize', handleScroll);
+  }, [events]);
 
   if (loading) {
     return (
-      <div className="max-h-screen bg-gray-900 text-white p-4 flex flex-col justify-center font-inter">
-        <h1 className="text-xl md:text-2xl md:mt-8 md:mb-4 md:ml-8 text-left">{title}</h1>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-8">
+      <section className="bg-gray-900 text-white p-4 font-inter">
+        <h1 className="text-xl md:text-2xl mb-6 px-4">{title}</h1>
+        <div className="flex space-x-6 px-4 pb-6 overflow-x-auto scrollbar-hide">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="animate-pulse bg-gray-800 rounded-lg h-64" />
+            <div
+              key={i}
+              className="flex-shrink-0 w-64 h-80 bg-gray-800 rounded-lg animate-pulse"
+            />
           ))}
         </div>
-      </div>
+      </section>
     );
   }
 
-  if (!events || events.length === 0) {
+  if (!events?.length) {
     return (
-      <div className="max-h-screen bg-gray-900 text-white p-4 flex flex-col justify-center font-inter">
-        <h1 className="text-xl md:text-2xl md:mt-8 md:mb-4 md:ml-8 text-left">{title}</h1>
-        <div className="text-center py-12">
-          <p className="text-gray-400">No events available at the moment</p>
+      <section className="bg-gray-900 text-white p-4 font-inter">
+        <h1 className="text-xl md:text-2xl mb-6 px-4">{title}</h1>
+        <div className="text-center py-12 px-4">
+          <p className="text-gray-400">No events available</p>
         </div>
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="max-h-screen bg-gray-900 text-white p-4 flex flex-col justify-center font-inter">
-      <h1 className="text-xl md:text-2xl md:mt-8 md:mb-4 md:ml-8 text-left">{title}</h1>
-
-      <div className="relative w-full max-w-8xl">
-        <button
-          onClick={handlePrev}
-          disabled={totalEvents <= cardsToShow}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-lg z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Previous Event"
+    <section className="bg-gray-900 text-white p-4 font-inter">
+      <h1 className="text-xl md:text-2xl mb-6 px-4">{title}</h1>
+      <div className="relative">
+        <div
+          ref={carouselRef}
+          onScroll={handleScroll}
+          className="flex space-x-6 pb-6 px-4 overflow-x-auto scrollbar-hide"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+            scrollSnapType: 'x mandatory',
+          }}
         >
-          <ChevronLeft className="h-6 w-6" />
-        </button>
-        
-        <div ref={carouselRef} className="overflow-hidden px-12">
-          <div
-            className="flex transition-transform duration-500 ease-in-out gap-6"
-            style={{ transform: `translateX(${translateXValue}px)` }}
-          >
-            {events.map((event, index) => (
-              <div
-                key={event._id || index}
-                className="flex-shrink-0"
-                style={{ width: `${cardWidth}px` }}
-              >
-                <EventCard event={event} />
-              </div>
-            ))}
-          </div>
+          {events.map((event, index) => (
+            <div
+              key={event._id || index}
+              className="flex-shrink-0 w-64 md:w-72 transition-transform duration-300 hover:scale-105"
+              style={{ scrollSnapAlign: 'start' }}
+            >
+              <EventCard event={event} />
+            </div>
+          ))}
         </div>
-
-        <button
-          onClick={handleNext}
-          disabled={totalEvents <= cardsToShow}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-lg z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Next Event"
-        >
-          <ChevronRight className="h-6 w-6" />
-        </button>
+        
+        {/* Gradient fade effects */}
+        {showLeftGradient && (
+          <div className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-gray-900 to-transparent pointer-events-none" />
+        )}
+        {showRightGradient && (
+          <div className="absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-gray-900 to-transparent pointer-events-none" />
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -179,26 +142,18 @@ const TopEvents = () => {
     const fetchEvents = async () => {
       try {
         const token = localStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
+        if (!token) return;
 
-        const response = await fetch(API_URL, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const res = await fetch(API_URL, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch events');
-        }
-
-        const data = await response.json();
+        if (!res.ok) throw new Error('Failed to fetch events');
+        const data = await res.json();
         setEvents(data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-        toast.error(error.message);
+      } catch (err) {
+        console.error(err);
+        toast.error(err.message || 'Something went wrong');
       } finally {
         setLoading(false);
       }
@@ -207,13 +162,7 @@ const TopEvents = () => {
     fetchEvents();
   }, []);
 
-  return (
-    <CarouselSection 
-      title="Featured Events" 
-      events={events} 
-      loading={loading} 
-    />
-  );
+  return <CarouselSection title="Featured Events" events={events} loading={loading} />;
 };
 
 export default TopEvents;

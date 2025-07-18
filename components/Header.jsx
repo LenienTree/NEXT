@@ -43,12 +43,13 @@ export default function Header( {pagename}) {
       </div>
 
       {/* Profile */}
-      <div className="hidden md:block  border-10">
-        <img
-          src="/placeholder.svg?height=40&width=40"
-          alt="Profile"
-          className="w-10 h-10 rounded-full border-2"
-        />
+      <div className="hidden md:block">
+        <a href="/profile" className="flex items-center space-x-2">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+            <span>P</span>
+          </div>
+          <span className="text-white text-sm font-medium hidden lg:block">Profile</span>
+        </a>
       </div>
 
           {/* Mobile Menu Button */}
