@@ -18,7 +18,7 @@ export default function Login() {
     phoneNumber: '',
     college: '',
     graduationYear: '',
-    role: 'student'
+    role: 'user'
   })
 
   useEffect(() => {
