@@ -256,9 +256,9 @@ export default function CreateEvent() {
 
                 {/* Event Date */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium">Event Date & Time *</label>
+                  <label className="block text-sm font-medium">Event Date *</label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="eventDate"
                     required
                     value={formData.eventDate}

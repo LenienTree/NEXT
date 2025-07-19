@@ -18,7 +18,7 @@ export default function Login() {
     phoneNumber: '',
     college: '',
     graduationYear: '',
-    role: ''
+    role: 'admin' // Set default role to 'user'
   })
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function Login() {
           phoneNumber: '',
           college: '',
           graduationYear: '',
-          role: ''
+          role: 'admin' // Keep role as 'user' when resetting form
         }));
       } else {
         // If it was a login, store token and redirect to landing page
@@ -159,22 +159,8 @@ export default function Login() {
                   disabled={isLoading}
                 />
               </div>
-              <div>
-                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-                  <select
-                    id="role"
-                    name="role"
-                    required
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                  >
-                    <option value="">Select a role</option>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
+
+              <input type="hidden" name="role" value="user" />
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">College/University</label>
@@ -263,7 +249,7 @@ export default function Login() {
                   phoneNumber: '',
                   college: '',
                   graduationYear: '',
-                  role: '' // Ensure role is reset here too when toggling manually
+                  role: 'admin' // Ensure role is reset here too when toggling manually
                 })
                 setIsSignUp(!isSignUp)
               }}
