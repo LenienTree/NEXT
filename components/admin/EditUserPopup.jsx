@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export default function EditUserPopup({ user, onClose, onUpdate }) {
   const [formData, setFormData] = useState({

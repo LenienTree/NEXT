@@ -2,13 +2,23 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Menu, X, LogOut, User } from "lucide-react"
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-export default function Header({ pagename }) {
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const profileRef = useRef(null)
   const router = useRouter()
+  const pathname = usePathname()
+  
+  // Function to check if a link is active
+  const isActive = (href) => {
+    if (href === '/landing') {
+      return pathname === '/' || pathname === '/landing';
+    }
+    return pathname === href;
+  }
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,9 +40,9 @@ export default function Header({ pagename }) {
   }
 
   const navItems = [
-    { name: "Home", href: "/landing",},
-    { name: "Calendar", href: "callender" },
-    { name: "About", href: "about" },
+    { name: "Home", href: "/landing" },
+    { name: "Calendar", href: "/callender" },
+    { name: "About", href: "/about" },
     { name: "Portfolio", href: "#" },
   ]
 
@@ -52,15 +62,15 @@ export default function Header({ pagename }) {
       <div className="rounded-full hidden md:block  p-4 bg-white/10 shadow-md  ">
         <nav className="hidden md:flex gap-7 items-center space-x-10 mx-8 ">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.name}
               href={item.href}
               className={`text-sm font-medium transition-colors  ${
-                item.name==pagename ? "  bg-black/40 px-2 text-[#9AE600] rounded-full" : "text-gray-300 hover:text-[#9AE600]"
+                isActive(item.href) ? "bg-black/40 px-2 text-[#9AE600] rounded-full" : "text-gray-300 hover:text-[#9AE600]"
               }`}
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
@@ -109,25 +119,25 @@ export default function Header({ pagename }) {
           <div className="md:hidden bg-[#022F2E] m-2 p-4 rounded-lg">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
-                  className={`text-sm font-medium transition-colors ${
-                    item.active ? "text-green-400" : "text-gray-300 hover:text-white"
+                  className={`text-sm font-medium transition-colors block py-1 ${
+                    isActive(item.href) ? "text-green-400" : "text-gray-300 hover:text-white"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
               <div className="border-t border-gray-700 pt-2 mt-2">
-                <a
+                <Link
                   href="/profile"
                   className="block py-2 text-sm text-gray-300 hover:text-white"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   View Profile
-                </a>
+                </Link>
                 <button
                   onClick={() => {
                     handleLogout();

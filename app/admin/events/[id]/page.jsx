@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { PencilIcon, TrashIcon, CalendarIcon, MapPinIcon, ClockIcon, UserGroupIcon, TagIcon } from '@heroicons/react/24/outline';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export default function EventDetails() {
   const [event, setEvent] = useState(null);

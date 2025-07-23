@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
-const API_URL = 'http://localhost:5000/api/events/getEventHighlights';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/events/getEventHighlights`;
 
 const EventCard = ({ event }) => {
   const [isHovered, setIsHovered] = useState(false);

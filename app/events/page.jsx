@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast'
 import Header from '../../components/Header'
 import Link from 'next/link'
 
-const API_URL = 'http://localhost:5000/api/events/my-events/'
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/events/my-events/`
 
 export default function EventsList() {
   const [events, setEvents] = useState([])

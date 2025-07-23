@@ -16,7 +16,7 @@ export default function EventDetails() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/events/get/${id}`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/get/${id}`)
         if (!response.ok) {
           throw new Error('Failed to fetch event')
         }
@@ -46,7 +46,7 @@ export default function EventDetails() {
 
   const handleCheckIn = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/events/${id}/check-in`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/${id}/check-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

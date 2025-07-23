@@ -12,7 +12,7 @@ const EditUserPopup = dynamic(
   { ssr: false }
 );
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);

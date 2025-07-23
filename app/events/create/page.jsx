@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import Header from '../../../components/Header'
 
-const API_URL = 'http://localhost:5000/api/events/create/'
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/events/create/`
 
 export default function CreateEvent() {
   const router = useRouter()

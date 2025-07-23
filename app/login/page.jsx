@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-const API_URL = 'http://localhost:5000/api/auth'
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`
 
 export default function Login() {
   const router = useRouter()
