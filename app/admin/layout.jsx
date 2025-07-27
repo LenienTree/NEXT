@@ -16,13 +16,13 @@ export default function AdminLayout({ children }) {
       try {
         const admin = await isAdmin();
         if (!admin) {
-          router.push('/login');
+          router.push('/landing');
           return;
         }
         setIsAuthorized(true);
       } catch (error) {
         console.error('Admin access error:', error);
-        router.push('/login');
+        router.push('/landing');
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAuthorized) {
-    return null; // Redirecting to login, so no need to render anything
+    return null; // Redirecting to landing, so no need to render anything
   }
 
   return (

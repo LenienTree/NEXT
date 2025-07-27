@@ -66,7 +66,7 @@ export const redirectIfNotAdmin = async (context) => {
   if (!token) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/landing',
         permanent: false,
       },
     };
@@ -82,7 +82,7 @@ export const redirectIfNotAdmin = async (context) => {
     if (!response.ok) {
       return {
         redirect: {
-          destination: '/login',
+          destination: '/landing',
           permanent: false,
         },
       };
@@ -103,7 +103,7 @@ export const redirectIfNotAdmin = async (context) => {
     console.error('Error in redirectIfNotAdmin:', error);
     return {
       redirect: {
-        destination: '/login',
+        destination: '/landing',
         permanent: false,
       },
     };

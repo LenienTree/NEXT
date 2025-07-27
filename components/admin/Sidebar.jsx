@@ -16,7 +16,7 @@ export default function Sidebar() {
   
   const handleSignOut = () => {
     localStorage.removeItem('token');
-    router.push('/login');
+    router.push('/landing');
   };
   
   const navItems = [

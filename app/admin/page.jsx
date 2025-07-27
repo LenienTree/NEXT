@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          window.location.href = '/login';
+          window.location.href = '/landing';
           return;
         }
 

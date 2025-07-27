@@ -29,7 +29,7 @@ export default function UsersList() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        router.push('/login');
+        router.push('/landing');
         return;
       }
 

@@ -14,7 +14,7 @@ export default function ProfilePage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          router.push('/login');
+          router.push('/landing');
           return;
         }
 
@@ -42,9 +42,9 @@ export default function ProfilePage() {
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast.error(error.message || 'Failed to load profile');
-        // If unauthorized, redirect to login
+        // If unauthorized, redirect to landing
         if (error.message.includes('401') || error.message.includes('token')) {
-          router.push('/login');
+          router.push('/landing');
         }
       } finally {
         setLoading(false);
@@ -69,10 +69,10 @@ export default function ProfilePage() {
           <h2 className="text-2xl font-bold mb-4">Profile Not Found</h2>
           <p className="text-gray-400 mb-6">We couldn't load your profile information.</p>
           <button
-            onClick={() => router.push('/login')}
+            onClick={() => router.push('/landing')}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
           >
-            Go to Login
+            Go to landing
           </button>
         </div>
       </div>

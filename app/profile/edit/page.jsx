@@ -21,7 +21,7 @@ export default function EditProfilePage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          router.push('/login');
+          router.push('/landing');
           return;
         }
 
@@ -71,7 +71,7 @@ export default function EditProfilePage() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        router.push('/login');
+        router.push('/landing');
         return;
       }
 
@@ -119,7 +119,7 @@ export default function EditProfilePage() {
       let errorMessage = 'Failed to update profile';
       if (error.message.includes('401') || error.message.includes('token')) {
         errorMessage = 'Session expired. Please log in again.';
-        router.push('/login');
+        router.push('/landing');
       } else if (error.message.includes('NetworkError')) {
         errorMessage = 'Network error. Please check your connection.';
       } else if (error.message) {

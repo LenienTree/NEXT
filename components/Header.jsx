@@ -36,7 +36,7 @@ export default function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
-    router.push('/login')
+    router.push('/landing')
   }
 
   const navItems = [
